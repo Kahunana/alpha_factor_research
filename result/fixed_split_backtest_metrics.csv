@@ -1,0 +1,9 @@
+metric,value
+cagr,-0.4756
+annual_volatility,0.3114
+sharpe,-2.126
+sortino,-1.614
+calmar,-1.223
+win_rate,0.2857
+max_drawdown,-0.389
+max_drawdown_duration,6.0
