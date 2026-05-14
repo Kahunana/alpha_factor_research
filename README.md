@@ -1,26 +1,26 @@
 # Alpha Factor Research
 
-这是一个基于 alpha-factor 的量化策略研究项目。项目的核心代码位于 `code/` 目录，支持因子计算、行业和市值中性化、组合构建、回测以及报告生成。
+This repository contains a quantitative alpha factor research project. The core implementation is in the `code/` directory and supports factor computation, optional industry and market capitalization neutralization, portfolio construction, backtesting, analysis, and report generation.
 
-## 目录结构
+## Project Structure
 
 - `code/`
-  - `run_all.py`：主入口脚本，执行固定划分回测、滚动回测并生成报告。
-  - `backtest_engine.py`：回测流程与绩效计算。
-  - `factor_calculator.py`：因子计算逻辑。
-  - `factor_neutralization.py`：行业和市值中性化。
-  - `portfolio_engine.py`：组合构建与多空回测逻辑。
-  - `analysis_engine.py`：回测可视化与风险暴露分析。
-  - `report_generator.py`：生成策略报告。
-  - `utils.py`：公共工具函数。
-- `data/raw_data/`：原始价格数据和可选行业、市值数据。
-- `data/processed_factor/`：因子计算结果输出目录。
-- `result/`：回测结果输出目录。
-- `report/`：回测报告与图表输出目录。
+  - `run_all.py`: main entry script that executes fixed-split backtest, rolling walk-forward backtest, analysis, and report generation.
+  - `backtest_engine.py`: backtest workflow and performance evaluation.
+  - `factor_calculator.py`: alpha factor computation logic.
+  - `factor_neutralization.py`: industry and market-cap neutralization.
+  - `portfolio_engine.py`: long-short portfolio construction and quantile grouping.
+  - `analysis_engine.py`: visualization and risk/exposure analysis.
+  - `report_generator.py`: markdown report creation.
+  - `utils.py`: common utility functions.
+- `data/raw_data/`: raw price data and optional industry/market-cap reference files.
+- `data/processed_factor/`: generated factor output.
+- `result/`: backtest result files.
+- `report/`: report and chart output files.
 
-## 依赖
+## Dependencies
 
-请使用 Python 3.8+ 执行。建议在虚拟环境中安装依赖：
+Use Python 3.8+ and install dependencies in a virtual environment:
 
 ```bash
 python3 -m venv .venv
@@ -28,67 +28,67 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-依赖中已经包含 `pandas`、`numpy` 和 `matplotlib`。
+The project requires `pandas`, `numpy`, and `matplotlib`.
 
-## 因子说明与模型
+## Factor Definitions
 
-项目构建了多维 alpha 因子组合，包括：
+The strategy builds a composite alpha score from the following monthly factors:
 
-- `mom_1m`：1 个月动量
-- `mom_6m`：6 个月动量
-- `short_rev`：短期反转
-- `vol_1m`：月度波动率
-- `vol_of_vol`：波动率的波动
-- `high_52w`：距离 52 周新高的程度
-- `intraday_trend`：月收盘价与月开盘价趋势
-- `amihud_illiq`：阿米哈德缺陷度指标
-- `volume_trend`：成交量趋势
-- `pv_corr`：价格与成交量相关性
-- `skew_3m`：收益偏度
+- `mom_1m`: 1-month momentum
+- `mom_6m`: 6-month momentum
+- `short_rev`: short-term reversal
+- `vol_1m`: monthly volatility
+- `vol_of_vol`: volatility of volatility
+- `high_52w`: distance from 52-week high
+- `intraday_trend`: end-of-month trend relative to opening price
+- `amihud_illiq`: Amihud illiquidity measure
+- `volume_trend`: 3-month volume trend
+- `pv_corr`: price-volume correlation
+- `skew_3m`: monthly return skewness
 
-所有因子先标准化后求平均，构建复合得分；组合采用长/短分位组构建多空组合。
+Each factor is standardized and averaged into a composite score. The portfolio is constructed by ranking assets by score and assigning them into quantile groups for long-short exposure.
 
-## 运行步骤
+## How to Run
 
-1. 确认原始数据文件已放入 `data/raw_data/`。
-   - 支持的价格数据文件为 CSV 格式。
-   - 最低要求列：`close`。
-   - 可选列：`date` / `timestamp` / `datetime`、`stock` / `symbol`、`open`、`high`、`low`、`volume`。
-2. 从项目根目录运行：
+1. Place raw data files into `data/raw_data/`.
+   - The primary input file should be a CSV.
+   - Required column: `close`.
+   - Optional columns: `date` / `timestamp` / `datetime`, `stock` / `symbol`, `open`, `high`, `low`, `volume`.
+2. Run from the project root:
 
 ```bash
 python3 code/run_all.py
 ```
 
-也可以运行根目录入口：
+Alternatively, use the root wrapper:
 
 ```bash
 python3 run_all.py
 ```
 
-回测完成后，结果文件将保存到 `result/`，报告文件将保存到 `report/`。
+After execution, results are saved under `result/` and reports are saved under `report/`.
 
-## 输出说明
+## Output Files
 
-- `result/fixed_split_backtest_nav.csv`：固定划分回测资产净值。
-- `result/fixed_split_backtest_returns.csv`：固定划分回测每周期收益率。
-- `result/fixed_split_backtest_metrics.csv`：固定划分回测绩效指标。
-- `result/rolling_walk_backtest_nav.csv`：滚动回测资产净值。
-- `result/rolling_walk_backtest_returns.csv`：滚动回测每周期收益率。
-- `result/rolling_walk_backtest_metrics.csv`：滚动回测绩效指标。
+- `result/fixed_split_backtest_nav.csv`: net asset values for fixed-split backtest.
+- `result/fixed_split_backtest_returns.csv`: periodic returns for fixed-split backtest.
+- `result/fixed_split_backtest_metrics.csv`: performance metrics for fixed-split backtest.
+- `result/rolling_walk_backtest_nav.csv`: net asset values for rolling walk-forward backtest.
+- `result/rolling_walk_backtest_returns.csv`: periodic returns for rolling walk-forward backtest.
+- `result/rolling_walk_backtest_metrics.csv`: performance metrics for rolling walk-forward backtest.
 
-- `report/strategy_report.md`：回测指标汇总报告，包含 CAGR、Sharpe、最大回撤等核心结果。
-- `report/*_analysis.md`：单个回测场景的风险暴露、因子相关性与分位组分析摘要。
-- `report/*_nav.png`：资产净值曲线图。
-- `report/*_drawdown.png`：回撤曲线图。
-- `report/*_factor_correlations.png`：因子与收益相关性图表。
+- `report/strategy_report.md`: consolidated backtest summary report.
+- `report/*_analysis.md`: scenario-level risk exposure, factor correlation, and quantile group analysis.
+- `report/*_nav.png`: net asset value charts.
+- `report/*_drawdown.png`: drawdown charts.
+- `report/*_factor_correlations.png`: factor correlation charts.
 
-## 数据说明
+## Data Notes
 
-- 如果 `data/raw_data/` 中没有行业或市值文件，策略仍然可以运行；中性化模块会在数据缺失时跳过对应处理。
-- 若要补充行业分类，请添加包含列 `date`、`stock` 和 `industry` 的 CSV 文件。
-- 若要补充市值数据，请添加包含列 `date`、`stock` 和 `market_cap`（或 `marketcap` / `size`）的 CSV 文件。
+- If there is no industry or market-cap file in `data/raw_data/`, the strategy still runs. The neutralization module skips missing reference data.
+- To add industry classification, provide a CSV file containing `date`, `stock`, and `industry` columns.
+- To add market-cap data, provide a CSV file containing `date`, `stock`, and one of `market_cap`, `marketcap`, or `size` columns.
 
-## 说明
+## Notes
 
-目前项目默认使用 `data/raw_data/` 下的首个 CSV 原始价格文件进行因子计算。推荐将币种或股票价格数据整理为标准时间序列格式，以获得更稳定的因子与回测结果。
+The project currently uses the first CSV file discovered in `data/raw_data/` as the raw price input. It is recommended to prepare clean, continuous time series price data for more reliable factor computation and backtesting.
