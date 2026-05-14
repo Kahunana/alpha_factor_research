@@ -10,12 +10,13 @@
   - `factor_calculator.py`：因子计算逻辑。
   - `factor_neutralization.py`：行业和市值中性化。
   - `portfolio_engine.py`：组合构建与多空回测逻辑。
+  - `analysis_engine.py`：回测可视化与风险暴露分析。
   - `report_generator.py`：生成策略报告。
   - `utils.py`：公共工具函数。
 - `data/raw_data/`：原始价格数据和可选行业、市值数据。
 - `data/processed_factor/`：因子计算结果输出目录。
 - `result/`：回测结果输出目录。
-- `report/`：回测报告输出目录。
+- `report/`：回测报告与图表输出目录。
 
 ## 依赖
 
@@ -65,7 +66,7 @@ python3 code/run_all.py
 python3 run_all.py
 ```
 
-回测完成后，结果文件将保存到 `result/`，报告文件保存到 `report/`。
+回测完成后，结果文件将保存到 `result/`，报告文件将保存到 `report/`。
 
 ## 输出说明
 
